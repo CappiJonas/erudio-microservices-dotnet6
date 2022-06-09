@@ -1,0 +1,56 @@
+﻿using GeekShopping.Web.Models;
+using GeekShopping.Web.Services.IServices;
+using GeekShopping.Web.Utils;
+
+namespace GeekShopping.Web.Services
+{
+    public class ProductService : IProductService
+    {
+        private readonly HttpClient _client;
+        public const string BasePath = "api/v1/product";
+
+        public ProductService(HttpClient client)
+        {
+            _client = client ?? throw new ArgumentNullException(nameof(client));
+        }
+
+        public async Task<IEnumerable<ProductViewModel>> FindAllProducts()
+        {
+            var response = await _client.GetAsync(BasePath);
+            return await response.ReadContectAs<IList<ProductViewModel>>();
+        }
+
+        public async Task<ProductViewModel> FindProductById(long id)
+        {
+            var response = await _client.GetAsync($"{BasePath}/{id}");
+            return await response.ReadContectAs<ProductViewModel>();
+        }
+
+        public async Task<ProductViewModel> CreateProduct(ProductViewModel model)
+        {
+            var response = await _client.PostAsJson(BasePath, model);
+            if (response.IsSuccessStatusCode)
+                return await response.ReadContectAs<ProductViewModel>();
+            else
+                throw new Exception("Something went wrong when calling API");
+        }
+
+        public async Task<ProductViewModel> UpdateProduct(ProductViewModel model)
+        {
+            var response = await _client.PutAsJson(BasePath, model);
+            if (response.IsSuccessStatusCode)
+                return await response.ReadContectAs<ProductViewModel>();
+            else
+                throw new Exception("Something went wrong when calling API");
+        }
+
+        public async Task<bool> DeleteProductById(long id)
+        {
+            var response = await _client.DeleteAsync($"{BasePath}/{id}");
+            if (response.IsSuccessStatusCode)
+                return await response.ReadContectAs<bool>();
+            else
+                throw new Exception("Something went wrong when calling API");
+        }       
+    }
+}
