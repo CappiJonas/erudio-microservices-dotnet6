@@ -1,6 +1,7 @@
 ﻿using GeekShopping.Web.Models;
 using GeekShopping.Web.Services.IServices;
 using GeekShopping.Web.Utils;
+using System.Net.Http.Headers;
 
 namespace GeekShopping.Web.Services
 {
@@ -14,20 +15,23 @@ namespace GeekShopping.Web.Services
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public async Task<IEnumerable<ProductViewModel>> FindAllProducts()
+        public async Task<IEnumerable<ProductViewModel>> FindAllProducts(string token)
         {
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.GetAsync(BasePath);
             return await response.ReadContectAs<IList<ProductViewModel>>();
         }
 
-        public async Task<ProductViewModel> FindProductById(long id)
+        public async Task<ProductViewModel> FindProductById(long id, string token)
         {
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.GetAsync($"{BasePath}/{id}");
             return await response.ReadContectAs<ProductViewModel>();
         }
 
-        public async Task<ProductViewModel> CreateProduct(ProductViewModel model)
+        public async Task<ProductViewModel> CreateProduct(ProductViewModel model, string token)
         {
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.PostAsJson(BasePath, model);
             if (response.IsSuccessStatusCode)
                 return await response.ReadContectAs<ProductViewModel>();
@@ -35,8 +39,9 @@ namespace GeekShopping.Web.Services
                 throw new Exception("Something went wrong when calling API");
         }
 
-        public async Task<ProductViewModel> UpdateProduct(ProductViewModel model)
+        public async Task<ProductViewModel> UpdateProduct(ProductViewModel model, string token)
         {
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.PutAsJson(BasePath, model);
             if (response.IsSuccessStatusCode)
                 return await response.ReadContectAs<ProductViewModel>();
@@ -44,8 +49,9 @@ namespace GeekShopping.Web.Services
                 throw new Exception("Something went wrong when calling API");
         }
 
-        public async Task<bool> DeleteProductById(long id)
+        public async Task<bool> DeleteProductById(long id, string token)
         {
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.DeleteAsync($"{BasePath}/{id}");
             if (response.IsSuccessStatusCode)
                 return await response.ReadContectAs<bool>();
