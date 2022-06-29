@@ -19,14 +19,14 @@ namespace GeekShopping.Web.Services
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.GetAsync(BasePath);
-            return await response.ReadContectAs<IList<ProductViewModel>>();
+            return await response.ReadContentAs<IList<ProductViewModel>>();
         }
 
         public async Task<ProductViewModel> FindProductById(long id, string token)
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.GetAsync($"{BasePath}/{id}");
-            return await response.ReadContectAs<ProductViewModel>();
+            return await response.ReadContentAs<ProductViewModel>();
         }
 
         public async Task<ProductViewModel> CreateProduct(ProductViewModel model, string token)
@@ -34,7 +34,7 @@ namespace GeekShopping.Web.Services
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.PostAsJson(BasePath, model);
             if (response.IsSuccessStatusCode)
-                return await response.ReadContectAs<ProductViewModel>();
+                return await response.ReadContentAs<ProductViewModel>();
             else
                 throw new Exception("Something went wrong when calling API");
         }
@@ -44,7 +44,7 @@ namespace GeekShopping.Web.Services
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.PutAsJson(BasePath, model);
             if (response.IsSuccessStatusCode)
-                return await response.ReadContectAs<ProductViewModel>();
+                return await response.ReadContentAs<ProductViewModel>();
             else
                 throw new Exception("Something went wrong when calling API");
         }
@@ -54,7 +54,7 @@ namespace GeekShopping.Web.Services
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.DeleteAsync($"{BasePath}/{id}");
             if (response.IsSuccessStatusCode)
-                return await response.ReadContectAs<bool>();
+                return await response.ReadContentAs<bool>();
             else
                 throw new Exception("Something went wrong when calling API");
         }       
