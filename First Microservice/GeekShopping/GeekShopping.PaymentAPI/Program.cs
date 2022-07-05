@@ -1,8 +1,6 @@
-using GeekShopping.OrderAPI.MessageConsumer;
-using GeekShopping.OrderAPI.Model.Context;
-using GeekShopping.OrderAPI.RabbitMqSender;
-using GeekShopping.OrderAPI.Repository;
-using Microsoft.EntityFrameworkCore;
+using GeekShopping.PaymentAPI.MessageConsumer;
+using GeekShopping.PaymentAPI.RabbitMqSender;
+using GeekShopping.PaymentProcessor;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -10,15 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddSqlServer<SqlServerContext>(builder.Configuration["SqlServerConnection:ConnectionString"]);
-
-var optionsBuilder = new DbContextOptionsBuilder<SqlServerContext>();
-optionsBuilder.UseSqlServer(builder.Configuration["SqlServerConnection:ConnectionString"]);
-
-builder.Services.AddSingleton(new OrderRepository(optionsBuilder.Options));
-
-builder.Services.AddHostedService<RabbitMqCheckoutConsumer>();
 builder.Services.AddHostedService<RabbitMqPaymentConsumer>();
+
+builder.Services.AddSingleton<IProcessPayment, ProcessPayment>();
 builder.Services.AddSingleton<IRabbitMqMessageSender, RabbitMqMessageSender>();
 
 builder.Services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
@@ -46,7 +38,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.OrderAPI", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.PaymentAPI", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
         Description = @"Enter 'Bearer' [space] and your token!",

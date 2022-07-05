@@ -85,6 +85,7 @@ namespace GeekShopping.CartAPI.Controllers
         public async Task<ActionResult<CheckoutHeaderVO>> Checkout(CheckoutHeaderVO vo)
         {
             string token = Request.Headers["Authorization"];
+            token = token.Substring(7);
 
             if (vo?.UserId == null)
                 return BadRequest();
@@ -111,6 +112,8 @@ namespace GeekShopping.CartAPI.Controllers
             vo.DateTime = DateTime.Now;
 
             _rabbitMqMessageSender.SendMessage(vo, "checkoutqueue");
+
+            await _cartRepository.ClearCart(vo.UserId);
 
             return Ok(vo);
         }
