@@ -88,7 +88,13 @@ namespace GeekShopping.Web.Controllers
 
             if (response != null)
             {
-                return RedirectToAction(nameof(Confirmation));
+                if (response.GetType() == typeof(string))
+                {
+                    TempData["Error"] = response;
+                    return RedirectToAction(nameof(Checkout));
+                }                 
+                else
+                    return RedirectToAction(nameof(Confirmation));
             }
             return View(model);
         }

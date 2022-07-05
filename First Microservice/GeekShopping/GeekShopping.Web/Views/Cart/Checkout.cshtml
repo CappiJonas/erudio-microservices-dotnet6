@@ -1,5 +1,10 @@
 ﻿@model GeekShopping.Web.Models.CartViewModel
 
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-warning" role="alert">@TempData["Error"]</div>
+}
+
 @if (Model.CartHeader != null && Model.CartDetails.Count() > 0)
 {
     <form method="post">
@@ -102,11 +107,11 @@
                             <div class="row">
                                 <div class="col-12">
                                     <button type="submit" class="btn btn-success form-control">
-                                        <span>PlaceOrder</span>
+                                        <span>Place Order</span>
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        </div> 
                     </div>
                 </div>
             </div>
