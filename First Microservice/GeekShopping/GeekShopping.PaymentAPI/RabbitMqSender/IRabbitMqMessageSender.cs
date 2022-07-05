@@ -4,6 +4,6 @@ namespace GeekShopping.PaymentAPI.RabbitMqSender
 {
     public interface IRabbitMqMessageSender
     {
-        void SendMessage(BaseMessage message, string queueName);
+        void SendMessage(BaseMessage message);
     }
 }
